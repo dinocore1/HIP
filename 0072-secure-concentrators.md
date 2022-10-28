@@ -25,16 +25,16 @@ The entire IoT Helium network will be affected by this HIP as the introduction o
  * Increase security level of Helium's Proof-of-Coverage (I.E. make gaming much more difficult).
  * Ability to replace/upgrade existing Miner's concentrator card with secure concentrator card
  * Turn off-the-shelf LoRaWAN gateways into full PoC Helium miner (DIY hotspot)
-   * Secure Concentrators effectively replace the need for ECC806 security chip as mandated in HIP 19.
+   * Secure Concentrators effectively replace the need for ECC608 security chip as mandated in HIP 19.
  * Enable new class of Helium nodes that can provide additional functionality (LoRa PoC Mapper? Mobile Hotspot?)
  * Enable new level of Proof-of-Coverage verification (possibly using Time Difference of Arrival (TDOA)) 
 
 ### Hardware Architecture
 ![image ](secure-concentrators/hardware_block.png)
-The new hardware architecture for SCC is based on Semtech's LoRa Corecell Gateway reference design. The major change involves the addition of a Secure MCU (**SMCU**) placed in between the communication path of the Host CPU and the SX1303. The SMCU's primary job is to cryptographically sign RF data received over the air such that other nodes participating on the Helium network are able to verify the data is authentic and unaltered from it original form. It is important the SMCU has exclusive access SX1303's SPI bus to eliminate the possibility of spoofing incoming RF packets. The hardware design will consider several techniques to make it physically difficult to access the SMPU and SX130x including using buried traces, placing the components under a metal shield, and/or using potting material.
+The new hardware architecture for SCC is based on Semtech's LoRa Corecell Gateway reference design. The major change involves the addition of a Secure MCU (**SMCU**) placed in between the communication path of the Host CPU and the SX1303. The SMCU's primary job is to cryptographically sign RF data received over the air such that other nodes participating on the Helium network are able to verify the data is authentic and unaltered from it original form. It is important the SMCU has exclusive access SX1303's SPI bus to eliminate the possibility of spoofing incoming RF packets. The hardware design will consider several techniques to make it physically difficult to access the SMCU and SX130x including using buried traces, placing the components under a metal shield, and/or using potting material.
 
 ### Hardware Key
-The SMCU stores a unique ED25519 keypair generated at manufacturing time in its non-volatile memory known as the **Hardware Key**. Note: the Hardware Key is not the same as the `swarm_key`. This is an important concept as it allows existing Miner's to upgrade their existing concentrator card with new SCC. The Hardware's private key is considered a secret and stored in a special section of the SMCU non-volatile memory used for secure storage. Secure storage can not be read-out and is not accessible to the Host CPU or via hardware debugging tools.
+The SMCU stores a unique ED25519 keypair generated at manufacturing time in its non-volatile memory known as the **Hardware Key**. Note: the Hardware Key is not the same as the `swarm_key`. This is an important concept as it allows existing Miners to upgrade their existing concentrator card with new SCC. The Hardware's private key is considered a secret and stored in a special section of the SMCU non-volatile memory used for secure storage. Secure storage can not be read-out and is not accessible to the Host CPU or via hardware debugging tools.
 
 The Hardware Key can also be used to sign other types of transactions beyond RF data. However, it does not allow signing *arbitrary* data. Doing so would put the security on par with existing HIP-19 secure element approach and thus defeat the purpose of this HIP. Note: If the SMCU's firmware allowed for signing arbitrary data with its Hardware Key, an attacker could jailbreak the Host CPU and craft a signing request that contained fake RF data.
 
@@ -108,7 +108,7 @@ NLighten Systems has developed Open-Source hardware and firmware Secure Concentr
 
 ## Rationale and Alternatives
 
-The proposed architecture of SCC is the best possible design because it cleanly and securely decouples low-level RF packet data from high-level Helium network protocol and constructs. This decoupling is important because we expect the Helium network protocol to continue to grow and evolve in the future and it would be prohibitively difficult to maintain SMCU firmware to keep up. This architecture also enables potential new class of Helium nodes that can provide additional future functionality. For example, a SCC could be used in a PoC Mapper device to securely verify coverage in remote locations. Perhaps most importantly, this architecture can be used to upgrade existing Helium miners hopefully one day eliminating wide spread network gaming.
+The proposed architecture of SCC is the best possible design because it cleanly and securely decouples low-level RF packet data from high-level Helium network protocol and constructs. This decoupling is important because we expect the Helium network protocol to continue to grow and evolve in the future and it would be prohibitively difficult to maintain SMCU firmware to keep up. This architecture also enables a potential new class of Helium nodes that can provide additional future functionality. For example, a SCC could be used in a PoC Mapper device to securely verify coverage in remote locations. Perhaps most importantly, this architecture can be used to upgrade existing Helium miners hopefully one day eliminating wide spread network gaming.
 
 ## Unresolved Questions
 
