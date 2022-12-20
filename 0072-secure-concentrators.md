@@ -10,8 +10,8 @@
 In this HIP, we propose a new type of IoT network actor: the Secure Concentrator Card (SCC). Secure Concentrator Card is similar to standard LoRaWAN concentrator cards, but with additional Secure Microcontroller Unit (SMCU) and onboard GPS receiver. The SMCU digitally signs LoRa data packets as they are received from the radio. In this way, packet data and its corresponding metadata (RSSI, Frequency, GPS location and time) can be verified to be authentic.
 
 
- * Secure Concentrators are *optional.* There is **no** requirement to upgrade or purchase new hardware. Helium Hotspots without Secure Concentrator will continue functioning as normal.
- * Helium Hotspots with Secure Concentrators will earn **1.25x** rewards. (See *Proof Of Coverage Rewards* section)
+ * Secure Concentrators are *optional.* There is **no** requirement to upgrade or purchase new hardware. Existing Helium Hotspots without Secure Concentrator will continue functioning and earning rewards as normal.
+ * There will be no change in PoC rewards for existing Helium Hotspots. Existing Hotspots and Hotspots with Secure Concentrators will earn the same amount of rewards. However, new Hotspots *without* Secure Concentrators will earn less. (See *Proof Of Coverage Rewards* section)
 
 ## Motivation
 Today's Helium Hotspot have a large security flaw. Anyone can modify the software running on a hotspot and generate fake LoRa packets. This is a big problem because PoC rewards are based on these packets. The new Secure Concentrator Card solves this problem by digitally signing packets in hardware. Secure Concentrators make it *prohibitively* difficult to game the PoC system by also utilizing tamper-resistant design elements (routed traces, hard cured potting material, etc). The end result is a more secure Physical Root of Trust for the Helium IoT system and fair PoC earnings for all.
@@ -95,7 +95,15 @@ signature = ed25519_sign(msg, pubKey, privKey)
 The firmware running on Secure Concentrator is open-source. The firmware itself has a bootloader that checks the cryptographic signature of the application image at each power up to ensure it is unaltered from its original form. The Helium Foundation manages the cryptographic key used by bootloader. The Helium Foundation is also responsible for auditing the firmware.
 
 ## Proof of Coverage Rewards
-In order to incentivize adoption of Secure Concentrators, we propose increasing the earnings of PoC Witness packets received by Secure Concentrator by a factor of **(1.25x)**. We believe this is justified due to the increased security benefits the entire Helium network will enjoy with the addition of Secure Concentators.
+In order to incentivize adoption of Secure Concentrators, we will make the following change to the Proof-of-Coverage rewards structure:
+
+ * **1.00x** PoC Witness rewards factor for Hotspots *with* Secure Concentrator Card.
+ * **1.00x** PoC Witness rewards factor for Hotspots *without* Secure Concentrator Card onboarded to the blockchain *before* the Switch-over date.
+ * **0.75x** PoC Witness rewards factor for Hotspots *without* Secure Concentrator Card onboarded to the blockchain *after* the Switch-over date.
+
+This reward structure is designed to incentivize adoption of Secure Concentrators while continuing to reward existing Hotspot fleet owners at the same level. 
+
+The Switch-over date will be announced 3 months in advance by the Helium Foundation. The Switch-over date will ideally occur Q2 of 2023.
 
 ## Onboarding
 Manufacturers will purchase unique ED25519 keypairs for installation onto Secure Concentrator devices from the Heilum Foundation for a fee of 4,000,000 DC ($40 USD) each. Each Manufacturer will be required to purchase a minimum quantity of 1000 key pairs. This rule serves as a type of proof-of-stake mechanism ensuring only serious manufactures are allowed access to keypairs. Keypairs are intended for installation on Secure Concentrators produced by that Manufacturer only. Any Manufacturer found to be re-selling keypairs or otherwise using them as unintended, will have their keypairs revoked. 
